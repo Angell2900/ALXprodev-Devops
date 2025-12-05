@@ -1,0 +1,11 @@
+#!/bin/bash
+FILE="data.json"
+
+# Extract data using jq and format nicely
+NAME=$(jq -r '.name' "$FILE" | sed 's/\b\(.\)/\u\1/')
+TYPE=$(jq -r '.types[0].type.name' "$FILE" | sed 's/\b\(.\)/\u\1/')
+WEIGHT=$(jq -r '.weight' "$FILE")
+HEIGHT=$(jq -r '.height' "$FILE")
+
+echo "$NAME is of type $TYPE, weighs ${WEIGHT}kg, and is ${HEIGHT}m tall."
+
