@@ -1,24 +1,27 @@
 #!/bin/bash
-POKEMONS=("bulbasaur" "ivysaur" "venusaur" "charmander" "charmeleon")
+POKEMONS=(Bulbasaur Ivysaur Venusaur Charmander Charmeleon)
 DIR="pokemon_data"
-mkdir -p "$DIR"
 ERROR_LOG="errors.txt"
 
-for P in "${POKEMONS[@]}"; do
-    echo "Fetching data for $P..."
-    URL="https://pokeapi.co/api/v2/pokemon/$P"
+mkdir -p "$DIR"
 
-    for i in {1..3}; do
-        curl -s -f "$URL" -o "$DIR/$P.json" && break
-        echo "$(date): Attempt $i failed for $P" >> "$ERROR_LOG"
-        sleep 1
+for P in "${POKEMONS[@]}"; do
+    ATTEMPTS=0
+    SUCCESS=0
+    while [ $ATTEMPTS -lt 3 ]; do
+        curl -s "https://pokeapi.co/api/v2/pokemon/${P,,}" -o "$DIR/$P.json"
+        if [ $? -eq 0 ] && [ -s "$DIR/$P.json" ]; then
+            echo "Saved data to $DIR/$P.json ✅"
+            SUCCESS=1
+            break
+        else
+            echo "Attempt $((ATTEMPTS+1)) failed for $P" >> "$ERROR_LOG"
+            ATTEMPTS=$((ATTEMPTS+1))
+            sleep 1
+        fi
     done
 
-    if [ ! -f "$DIR/$P.json" ]; then
+    if [ $SUCCESS -eq 0 ]; then
         echo "Failed to fetch $P after 3 attempts." >> "$ERROR_LOG"
-    else
-        echo "Saved data to $DIR/$P.json ✅"
     fi
-    sleep 1
 done
-

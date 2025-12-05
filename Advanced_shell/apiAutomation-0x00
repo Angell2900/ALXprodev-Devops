@@ -1,14 +1,14 @@
 #!/bin/bash
-
 POKEMON="pikachu"
-URL="https://pokeapi.co/api/v2/pokemon/$POKEMON"
 OUTPUT="data.json"
 ERROR_LOG="errors.txt"
 
-curl -s -f "$URL" -o "$OUTPUT"
-if [ $? -ne 0 ]; then
-    echo "$(date): Failed to fetch $POKEMON" >> "$ERROR_LOG"
+
+curl -s "https://pokeapi.co/api/v2/pokemon/$POKEMON" -o "$OUTPUT"
+
+if [ $? -ne 0 ] || [ ! -s "$OUTPUT" ]; then
+    echo "Failed to fetch $POKEMON data at $(date)" >> "$ERROR_LOG"
+    exit 1
 else
     echo "Successfully fetched $POKEMON data."
 fi
-
