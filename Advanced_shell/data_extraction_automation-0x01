@@ -1,15 +1,15 @@
 #!/bin/bash
 FILE="data.json"
 
-# Extract data using jq
-NAME=$(jq -r '.name' "$FILE" | sed 's/\b\(.\)/\u\1/')   
-TYPE=$(jq -r '.types[0].type.name' "$FILE" | sed 's/\b\(.\)/\u\1/')
-WEIGHT=$(jq -r '.weight' "$FILE")
-HEIGHT=$(jq -r '.height' "$FILE")
+# Extract Pokémon data
+name=$(jq -r '.name' "$FILE" | sed 's/\b\(.\)/\u\1/')
+type=$(jq -r '.types[0].type.name' "$FILE" | sed 's/\b\(.\)/\u\1/')
+weight=$(jq -r '.weight' "$FILE")
+height=$(jq -r '.height' "$FILE")
 
+# Format weight and height using awk
+formatted_weight=$(echo "$weight" | awk '{printf "%.1f", $1/10}')
+formatted_height=$(echo "$height" | awk '{printf "%.1f", $1/10}')
 
-FORMATTED_WEIGHT=$(echo "$WEIGHT" | awk '{print $1/10}')  
-FORMATTED_HEIGHT=$(echo "$HEIGHT" | awk '{print $1/10}')  
-
-
-echo "$NAME is of type $TYPE, weighs ${FORMATTED_WEIGHT}kg, and is ${FORMATTED_HEIGHT}m tall."
+# Print exact required human-readable sentence
+echo "$name is of type $type, weighs ${formatted_weight}kg, and is ${formatted_height}m tall."

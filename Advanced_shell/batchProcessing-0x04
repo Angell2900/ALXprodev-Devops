@@ -21,15 +21,23 @@ for P in "${POKEMONS[@]}"; do
             sleep 1
         fi
     done
+
     if [ $SUCCESS -eq 0 ]; then
         echo "Failed to fetch $P after 3 attempts." >> "$ERROR_LOG"
     fi
 ) &
+# Store PID of background process
+PIDS[${P}]=$!
 done
 
-# Show jobs
+# Show background jobs
 jobs
 
-# Wait for all background processes
+# Example: terminate a process if needed (demonstration)
+# Uncomment the next line to kill a specific Pokémon fetch
+# kill ${PIDS[Bulbasaur]}
+
+# Wait for all background processes to finish
 wait
+
 echo "All background processes completed."
